@@ -117,7 +117,7 @@ def colourize(code, word)
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
-def get_index_stats(name)
+def get_coverage_stats(name)
   case version
     when '0.19.1' then coverage_json['groups'][name]
     else           fatal_error("Unknown simplecov version #{version}")
@@ -185,8 +185,8 @@ unless ['0.19.0', '0.19.1'].include?(version)
   table << [ 'test:count', test_count, '>=',  MIN[:test_count] ]
 end
 
-test_stats = get_index_stats(coverage_test_tab_name)
-app_stats = get_index_stats(coverage_code_tab_name)
+test_stats = get_coverage_stats(coverage_test_tab_name)
+app_stats = get_coverage_stats(coverage_code_tab_name)
 
 if ['0.19.0', '0.19.1'].include?(version)
   table += [
