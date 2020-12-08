@@ -156,18 +156,17 @@ unless MAX.keys.include?('test')
   p "max_metrics.json does not have key == 'test'"
 end
 
+# - - - - - - - - - - - - - - - - - - - - - - -
+code_stats = get_coverage_stats(coverage_code_tab_name)
+test_stats = get_coverage_stats(coverage_test_tab_name)
+
 table = [
   [ 'test:failures',    failure_count,  '<=',  MAX["failures"  ] ],
   [ 'test:errors',      error_count,    '<=',  MAX["errors"    ] ],
   [ 'test:warnings',    warning_count,  '<=',  MAX["warnings"  ] ],
   [ 'test:skips',       skip_count,     '<=',  MAX["skips"     ] ],
   [ 'test:duration(s)', test_duration,  '<=',  MAX["duration"  ] ],
-]
-
-test_stats = get_coverage_stats(coverage_test_tab_name)
-code_stats = get_coverage_stats(coverage_code_tab_name)
-
-table += [
+  
   [ 'code:lines:total',     code_stats['lines'   ]['total' ], '<=', MAX["code"]["lines"   ]["total" ] ],
   [ 'code:lines:missed',    code_stats['lines'   ]['missed'], '<=', MAX["code"]["lines"   ]["missed"] ],
   [ 'code:branches:total',  code_stats['branches']['total' ], '<=', MAX["code"]["branches"]["total" ] ],
