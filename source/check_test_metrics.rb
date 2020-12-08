@@ -65,8 +65,8 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 def version
   $version ||= begin
-    %w( 0.17.0 0.17.1 0.18.1 0.19.0 0.19.1 ).each do |n|
-      if index_html.include?("v#{n}")
+    %w( 0.19.1 ).each do |n|
+      if test_log.include?("SimpleCov version #{n}")
         return n
       end
     end
