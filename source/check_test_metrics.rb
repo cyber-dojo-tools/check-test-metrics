@@ -26,12 +26,12 @@ def max_metrics_json_filename
   ARGV[2] # eg /test/server/reports/max_metrics.json
 end
 
-def coverage_code_tab_name
-  ENV['COVERAGE_CODE_TAB_NAME']
+def code_dir
+  ENV['CODE_DIR']
 end
 
-def coverage_test_tab_name
-  ENV['COVERAGE_TEST_TAB_NAME']
+def test_dir
+  ENV['TEST_DIR']
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -39,8 +39,8 @@ def show_args
   p "ARGV[0] == #{ARGV[0]} (eg test.run.log)"
   p "ARGV[1] == #{ARGV[1]} (eg coverage.json)"
   p "ARGV[2] == #{ARGV[2]} (eg max_metrics.json)"
-  p "ENV['COVERAGE_CODE_TAB_NAME'] == #{coverage_code_tab_name}"
-  p "ENV['COVERAGE_TEST_TAB_NAME'] == #{coverage_test_tab_name}"
+  p "ENV['CODE_DIR'] == #{code_dir}"
+  p "ENV['TEST_DIR'] == #{test_dir}"
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -157,8 +157,8 @@ unless MAX.keys.include?('test')
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
-code_stats = get_coverage_stats(coverage_code_tab_name)
-test_stats = get_coverage_stats(coverage_test_tab_name)
+code_stats = get_coverage_stats(code_dir)
+test_stats = get_coverage_stats(test_dir)
 
 table = [
   [ 'test:failures',    failure_count,  '<=',  MAX["failures"  ] ],
@@ -166,7 +166,7 @@ table = [
   [ 'test:warnings',    warning_count,  '<=',  MAX["warnings"  ] ],
   [ 'test:skips',       skip_count,     '<=',  MAX["skips"     ] ],
   [ 'test:duration(s)', test_duration,  '<=',  MAX["duration"  ] ],
-  
+
   [ 'code:lines:total',     code_stats['lines'   ]['total' ], '<=', MAX["code"]["lines"   ]["total" ] ],
   [ 'code:lines:missed',    code_stats['lines'   ]['missed'], '<=', MAX["code"]["lines"   ]["missed"] ],
   [ 'code:branches:total',  code_stats['branches']['total' ], '<=', MAX["code"]["branches"]["total" ] ],
