@@ -141,8 +141,6 @@ def get_test_log_stats
     .map{ |s| "(#{number}) #{s}" }
     .join(', ')
   m = test_log.match(Regexp.new(summary_pattern))
-  stats[:test_count]      = m[1].to_i
-  stats[:assertion_count] = m[2].to_i
   stats[:failure_count]   = m[3].to_i
   stats[:error_count]     = m[4].to_i
   stats[:skip_count]      = m[5].to_i
@@ -164,7 +162,6 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 log_stats = get_test_log_stats
 
-test_count    = log_stats[:test_count]
 failure_count = log_stats[:failure_count]
 error_count   = log_stats[:error_count]
 warning_count = log_stats[:warning_count]
