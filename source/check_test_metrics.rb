@@ -172,6 +172,12 @@ skip_count    = log_stats[:skip_count]
 test_duration = log_stats[:time].to_f
 
 MAX = max_metrics_json
+unless MAX.keys.include?('code')
+  p "max_metrics.json does not have key == 'code'"
+end
+unless MAX.keys.include?('test')
+  p "max_metrics.json does not have key == 'test'"
+end
 
 table = [
   [ 'test:failures',    failure_count,  '<=',  MAX["failures"  ] ],
@@ -182,13 +188,13 @@ table = [
 ]
 
 test_stats = get_coverage_stats(coverage_test_tab_name)
-app_stats = get_coverage_stats(coverage_code_tab_name)
+code_stats = get_coverage_stats(coverage_code_tab_name)
 
 table += [
-  [ 'app:lines:total',      app_stats['lines'   ]['total' ], '<=', MAX["app"]["lines"   ]["total" ] ],
-  [ 'app:lines:missed',     app_stats['lines'   ]['missed'], '<=', MAX["app"]["lines"   ]["missed"] ],
-  [ 'app:branches:total',   app_stats['branches']['total' ], '<=', MAX["app"]["branches"]["total" ] ],
-  [ 'app:branches:missed',  app_stats['branches']['missed'], '<=', MAX["app"]["branches"]["missed"] ],
+  [ 'code:lines:total',     code_stats['lines'   ]['total' ], '<=', MAX["code"]["lines"   ]["total" ] ],
+  [ 'code:lines:missed',    code_stats['lines'   ]['missed'], '<=', MAX["code"]["lines"   ]["missed"] ],
+  [ 'code:branches:total',  code_stats['branches']['total' ], '<=', MAX["code"]["branches"]["total" ] ],
+  [ 'code:branches:missed', code_stats['branches']['missed'], '<=', MAX["code"]["branches"]["missed"] ],
 
   [ 'test:lines:total',     test_stats['lines'   ]['total' ], '<=', MAX["test"]["lines"   ]["total"  ] ],
   [ 'test:lines:missed',    test_stats['lines'   ]['missed'], '<=', MAX["test"]["lines"   ]["missed" ] ],
