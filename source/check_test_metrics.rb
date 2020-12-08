@@ -1,66 +1,67 @@
 
-# This scrapes data from three sources
-# 1) The minitest stdout which is tee'd to test.log
-# 2) The simplecov coverage index.html file.
-#    It would be nice if simplecov saved the raw data to a json file
-#    and created the html from that, but alas it does not.
-#    At the moment its from simplecov 0.17.0
-#    Simplecov now supports branch-coverage.
-#    However, it breaks my use of two tab groups off the root dir.
-#    See https://github.com/colszowka/simplecov/issues/860
-# 3) from simplecov 0.19.0 onwards uses coverage.json instead of
-#    index.html which is generated from a custom simplecov reporter.
-#    See https://github.com/cyber-dojo/differ/blob/master/test/lib/simplecov-json.rb
+# Combines test-run data from three sources whose filenames are specified on the command-line
+#   ARGV[0] The minitest stdout
+#           Provides failure-count, error-count, skip-count
+#   ARGV[1] The custom SimpleCov json report.
+#           Provides branch coverage stats.
+#           See https://github.com/cyber-dojo/differ/blob/master/test/lib/simplecov-json.rb
+#   ARGV[2] The max-metrics json file
+#           The values in 1) and 2) must not exceed these.
+#
+# Also relies on two coverage tab values (keys into ARGV[1]) being set in two env-vars
+#   o) ENV['COVERAGE_CODE_TAB_NAME'] is coverage for the code
+#   o) ENV['COVERAGE_TEST_TAB_NAME'] is coverage for the tests
 
 require 'json'
 
-# - - - - - - - - - - - - - - - - - - - - - - -
-def fatal_error(message)
-  puts message
-  exit(42)
+def test_log_filename
+  ARGV[0] # eg /test/server/reports/test.log
 end
 
-# - - - - - - - - - - - - - - - - - - - - - - -
+def coverage_json_filename
+  ARGV[1] # eg /test/server/reports/coverage.json
+end
+
+def max_metrics_json_filename
+  ARGV[2] # eg /test/server/reports/max_metrics.json
+end
+
 def coverage_code_tab_name
   ENV['COVERAGE_CODE_TAB_NAME']
 end
 
-# - - - - - - - - - - - - - - - - - - - - - - -
 def coverage_test_tab_name
   ENV['COVERAGE_TEST_TAB_NAME']
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
-def test_log
-  $test_log ||= begin
-    path = ARGV[0] # eg /test/server/reports/test.log
-    cleaned(IO.read(path))
-  end
+def show_args
+  p "ARGV[0] == #{ARGV[0]} (eg test.run.log)"
+  p "ARGV[1] == #{ARGV[1]} (eg coverage.json)"
+  p "ARGV[2] == #{ARGV[2]} (eg max_metrics.json)"
+  p "ENV['COVERAGE_CODE_TAB_NAME'] == #{coverage_code_tab_name}"
+  p "ENV['COVERAGE_TEST_TAB_NAME'] == #{coverage_test_tab_name}"
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
-def index_html
-  $index_html ||= begin
-    path = ARGV[1] # eg /test/server/reports/index.html
-    cleaned(IO.read(path))
-  end
+def test_log
+  $test_log ||= cleaned(IO.read(test_log_filename))
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 def coverage_json
-  # Created from SimpleCov custom formatter
-  $coverage_json ||= begin
-    path = ARGV[2] # eg /test/server/reports/coverage.json
-    JSON.parse(IO.read(path))
-  end
+  $coverage_json ||= JSON.parse(IO.read(coverage_json_filename))
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 def max_metrics_json
-  $max_metrics_json ||= begin
-    path = ARGV[3] # eg /test/server/reports/max_metrics.json
-    JSON.parse(IO.read(path))
-  end
+  $max_metrics_json ||= JSON.parse(IO.read(max_metrics_json_filename))
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - -
+def fatal_error(message)
+  puts message
+  exit(42)
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -73,16 +74,6 @@ def version
     end
     fatal_error('Unknown simplecov version!')
   end
-end
-
-# - - - - - - - - - - - - - - - - - - - - - - -
-def show_args
-  p "ARGV[0] == #{ARGV[0]} (test.log)"
-  p "ARGV[1] == #{ARGV[1]} (index.html)"
-  p "ARGV[2] == #{ARGV[2]} (coverage.json)"
-  p "ARGV[3] == #{ARGV[3]} (max_metrics.json)"
-  p "ENV['COVERAGE_CODE_TAB_NAME'] == #{coverage_code_tab_name}"
-  p "ENV['COVERAGE_TEST_TAB_NAME'] == #{coverage_test_tab_name}"
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -146,17 +137,6 @@ def get_test_log_stats
   stats[:skip_count]      = m[5].to_i
 
   stats
-end
-
-# - - - - - - - - - - - - - - - - - - - - - - -
-def safe_divide(nom, denom, name)
-  upper = nom[name]
-  lower = denom[name]
-  if lower === 0
-    fail "ERROR (#{name})==0"
-  else
-    upper.to_f / lower.to_f
-  end
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
