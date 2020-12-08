@@ -181,42 +181,20 @@ table = [
   [ 'test:duration(s)', test_duration,  '<=',  MAX["duration"  ] ],
 ]
 
-unless ['0.19.0', '0.19.1'].include?(version)
-  table << [ 'test:count', test_count, '>=',  MIN[:test_count] ]
-end
-
 test_stats = get_coverage_stats(coverage_test_tab_name)
 app_stats = get_coverage_stats(coverage_code_tab_name)
 
-if ['0.19.0', '0.19.1'].include?(version)
-  table += [
-    [ 'app:lines:total',      app_stats['lines'   ]['total' ], '<=', MAX["app"]["lines"   ]["total" ] ],
-    [ 'app:lines:missed',     app_stats['lines'   ]['missed'], '<=', MAX["app"]["lines"   ]["missed"] ],
-    [ 'app:branches:total',   app_stats['branches']['total' ], '<=', MAX["app"]["branches"]["total" ] ],
-    [ 'app:branches:missed',  app_stats['branches']['missed'], '<=', MAX["app"]["branches"]["missed"] ],
+table += [
+  [ 'app:lines:total',      app_stats['lines'   ]['total' ], '<=', MAX["app"]["lines"   ]["total" ] ],
+  [ 'app:lines:missed',     app_stats['lines'   ]['missed'], '<=', MAX["app"]["lines"   ]["missed"] ],
+  [ 'app:branches:total',   app_stats['branches']['total' ], '<=', MAX["app"]["branches"]["total" ] ],
+  [ 'app:branches:missed',  app_stats['branches']['missed'], '<=', MAX["app"]["branches"]["missed"] ],
 
-    [ 'test:lines:total',     test_stats['lines'   ]['total' ], '<=', MAX["test"]["lines"   ]["total"  ] ],
-    [ 'test:lines:missed',    test_stats['lines'   ]['missed'], '<=', MAX["test"]["lines"   ]["missed" ] ],
-    [ 'test:branches:total',  test_stats['branches']['total' ], '<=', MAX["test"]["branches"]["total"  ] ],
-    [ 'test:branches:missed', test_stats['branches']['missed'], '<=', MAX["test"]["branches"]["missed" ] ],
-  ]
-else
-  tsc = test_stats[:line_count]
-  asc = app_stats[:line_count]
-  line_ratio = safe_divide(test_stats, app_stats, :line_count)
-  table << [ 'lines(test/app)',  f2(line_ratio), '>=',  MIN[:line_ratio] ]
-
-  asr = app_stats[:hits_per_line].to_f
-  tsr = test_stats[:hits_per_line].to_f
-  hits_ratio = safe_divide(app_stats, test_stats, :hits_per_line)
-  table << [ 'hits(app/test)',   f2(hits_ratio), '>=',  MIN[:hits_ratio] ]
-
-  app_coverage  = app_stats[:coverage].to_f
-  table << [ ' app:coverage[%]',  app_coverage,  '>=',  MIN[:app_coverage] ]
-
-  test_coverage = test_stats[:coverage].to_f
-  table << [ 'test:coverage[%]', test_coverage,  '>=',  MIN[:test_coverage] ]
-end
+  [ 'test:lines:total',     test_stats['lines'   ]['total' ], '<=', MAX["test"]["lines"   ]["total"  ] ],
+  [ 'test:lines:missed',    test_stats['lines'   ]['missed'], '<=', MAX["test"]["lines"   ]["missed" ] ],
+  [ 'test:branches:total',  test_stats['branches']['total' ], '<=', MAX["test"]["branches"]["total"  ] ],
+  [ 'test:branches:missed', test_stats['branches']['missed'], '<=', MAX["test"]["branches"]["missed" ] ],
+]
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 done = []
