@@ -16,6 +16,6 @@ jobs:
 
       - name: Build, test, and push to Dockerhub registry
         run:
-            echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username ${{ DOCKER_USERNAME }} --password-stdin
+            echo ${{ secrets.DOCKER_PASSWORD }} | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
             ./build_test_publish.sh
             docker logout
