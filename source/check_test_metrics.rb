@@ -60,19 +60,20 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 def fatal_error(message)
-  puts message
+  show_args
+  puts "ERROR: #{message}"
   exit(42)
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 def version
   $version ||= begin
-    %w( 0.19.1 ).each do |n|
+    %w( 0.19.1 0.21.2 ).each do |n|
       if test_log.include?("SimpleCov version #{n}")
         return n
       end
     end
-    fatal_error('Unknown simplecov version!')
+    fatal_error("Unknown simplecov version! #{test_log}")
   end
 end
 
@@ -111,6 +112,7 @@ end
 def get_coverage_stats(name)
   case version
     when '0.19.1' then coverage_json['groups'][name]
+    when '0.21.2' then coverage_json['groups'][name]
     else           fatal_error("Unknown simplecov version #{version}")
   end
 end
