@@ -9,8 +9,8 @@
 #           The values in 1) and 2) must not exceed these.
 #
 # Also relies on two coverage tab values (keys into ARGV[1]) being set in two env-vars
-#   o) ENV['COVERAGE_CODE_TAB_NAME'] is coverage for the code
-#   o) ENV['COVERAGE_TEST_TAB_NAME'] is coverage for the tests
+#   o) ENV['CODE_DIR'] is coverage for the code
+#   o) ENV['TEST_DIR'] is coverage for the tests
 
 require 'json'
 
