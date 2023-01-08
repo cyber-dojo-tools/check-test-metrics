@@ -1,17 +1,3 @@
-
-# Combines test-run data from three sources whose filenames are specified on the command-line
-#   ARGV[0] The minitest stdout
-#           Provides failure-count, error-count, skip-count
-#   ARGV[1] The custom SimpleCov json report.
-#           Provides branch coverage stats.
-#           See https://github.com/cyber-dojo/differ/blob/master/test/lib/simplecov-json.rb
-#   ARGV[2] The max-metrics json file
-#           The values in 1) and 2) must not exceed these.
-#
-# Also relies on two coverage tab values (keys into ARGV[1]) being set in two env-vars
-#   o) ENV['CODE_DIR'] is coverage for the code
-#   o) ENV['TEST_DIR'] is coverage for the tests
-
 require 'json'
 
 def test_log_filename
