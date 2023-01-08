@@ -8,10 +8,29 @@ Combines test-run data from three sources whose filenames are specified on the c
           Provides failure-count, error-count, skip-count
 - ARGV[1] The custom SimpleCov json report.
           Provides branch coverage stats.
-          See https://github.com/cyber-dojo/differ/blob/master/test/lib/simplecov-json.rb
+          Eg. https://github.com/cyber-dojo/runner/blob/master/test/lib/simplecov-json.rb
 - ARGV[2] The max-metrics json file
+          Eg. https://github.com/cyber-dojo/runner/blob/master/test/server/max_metrics.json
           The values in 1) and 2) must not exceed these.
 
 Also relies on two environment variables (keys into ARGV[1]) 
 - ENV['CODE_DIR'] is coverage for the code
 - ENV['TEST_DIR'] is coverage for the tests
+
+Typical use is:
+```bash
+docker run \
+    --rm \
+    --env CODE_DIR="${CODE_DIR}" \
+    --env TEST_DIR="${TEST_DIR}" \
+    --volume ${HOST_REPORTS_DIR}/${TEST_LOG}:${CONTAINER_TMP_DIR}/${TEST_LOG}:ro \
+    --volume ${HOST_REPORTS_DIR}/coverage.json:${CONTAINER_TMP_DIR}/coverage.json:ro \
+    --volume ${HOST_TEST_DIR}/max_metrics.json:${CONTAINER_TMP_DIR}/max_metrics.json:ro \
+    cyberdojo/check-test-metrics:latest \
+      "${CONTAINER_TMP_DIR}/${TEST_LOG}" \
+      "${CONTAINER_TMP_DIR}/coverage.json" \
+      "${CONTAINER_TMP_DIR}/max_metrics.json" \
+    | tee -a "${HOST_REPORTS_DIR}/${TEST_LOG}"
+```
+
+Eg https://github.com/cyber-dojo/runner/blob/master/sh/test_in_containers.sh#L102
