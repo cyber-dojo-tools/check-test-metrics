@@ -4,18 +4,15 @@
 # check-test-metrics
 
 Combines test-run data from three sources whose filenames are specified on the command-line:
-- ARGV[0] The minitest stdout. 
-          Provides failure-count, error-count, skip-count
-- ARGV[1] The custom SimpleCov json report.  
-          Provides branch coverage stats.  
+- `ARGV[0]` The minitest stdout. Provides failure-count, error-count, skip-count
+- `ARGV[1]` The custom SimpleCov json report. Provides branch coverage stats.  
           Eg. https://github.com/cyber-dojo/runner/blob/master/test/lib/simplecov-json.rb
-- ARGV[2] The max-metrics json file.  
+- `ARGV[2]` The max-metrics json file to check against ARGV[1] which determines the exit code. 
           Eg. https://github.com/cyber-dojo/runner/blob/master/test/server/max_metrics.json. 
-          The values in 1) and 2) must not exceed these.
 
-Also relies on two environment variables (keys into ARGV[1]) 
-- ENV['CODE_DIR'] is coverage for the code
-- ENV['TEST_DIR'] is coverage for the tests
+Also relies on two environment variables (keys into the json from ARGV[1]) 
+- `ENV['CODE_DIR']` is coverage for the code
+- `ENV['TEST_DIR']` is coverage for the tests
 
 Typical use is:
 ```bash
